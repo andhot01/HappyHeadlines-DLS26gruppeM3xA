@@ -1,0 +1,112 @@
+{
+  "configuration" : { },
+  "description" : "Description",
+  "documentation" : { },
+  "id" : 1,
+  "lastModifiedDate" : "2026-09-02T10:06:40Z",
+  "model" : {
+    "people" : [ {
+      "description" : "Can draft, review and publish articles.",
+      "id" : "1",
+      "name" : "Professional Publisher",
+      "properties" : {
+        "structurizr.dsl.identifier" : "Publisher"
+      },
+      "relationships" : [ {
+        "description" : "Uses",
+        "destinationId" : "3",
+        "id" : "4",
+        "sourceId" : "1",
+        "tags" : "Relationship"
+      } ],
+      "tags" : "Element,Person,Publisher"
+    }, {
+      "description" : "Can comment, share articles and subscribe to newsletters.",
+      "id" : "2",
+      "name" : "Reader",
+      "properties" : {
+        "structurizr.dsl.identifier" : "Reader"
+      },
+      "relationships" : [ {
+        "description" : "Uses",
+        "destinationId" : "3",
+        "id" : "5",
+        "sourceId" : "2",
+        "tags" : "Relationship"
+      } ],
+      "tags" : "Element,Person,Reader"
+    } ],
+    "softwareSystems" : [ {
+      "description" : "A positive news platform that allows publishers to create and publish articles, and readers to interact with articles and subscribe to newsletters.",
+      "documentation" : { },
+      "id" : "3",
+      "name" : "Happy Headlines",
+      "properties" : {
+        "structurizr.dsl.identifier" : "HappyHeadlines"
+      },
+      "tags" : "Element,Software System"
+    } ]
+  },
+  "name" : "Name",
+  "properties" : {
+    "structurizr.inspection.error" : "3",
+    "structurizr.dsl" : "d29ya3NwYWNlIHsKCiAgICBtb2RlbCB7CgogICAgICAgIFB1Ymxpc2hlciA9IHBlcnNvbiAiUHJvZmVzc2lvbmFsIFB1Ymxpc2hlciIgIkNhbiBkcmFmdCwgcmV2aWV3IGFuZCBwdWJsaXNoIGFydGljbGVzLiIgewogICAgICAgICAgICB0YWdzICJQdWJsaXNoZXIiCiAgICAgICAgfQoKICAgICAgICBSZWFkZXIgPSBwZXJzb24gIlJlYWRlciIgIkNhbiBjb21tZW50LCBzaGFyZSBhcnRpY2xlcyBhbmQgc3Vic2NyaWJlIHRvIG5ld3NsZXR0ZXJzLiIgewogICAgICAgICAgICB0YWdzICJSZWFkZXIiCiAgICAgICAgfQoKICAgICAgICBIYXBweUhlYWRsaW5lcyA9IHNvZnR3YXJlU3lzdGVtICJIYXBweSBIZWFkbGluZXMiICJBIHBvc2l0aXZlIG5ld3MgcGxhdGZvcm0gdGhhdCBhbGxvd3MgcHVibGlzaGVycyB0byBjcmVhdGUgYW5kIHB1Ymxpc2ggYXJ0aWNsZXMsIGFuZCByZWFkZXJzIHRvIGludGVyYWN0IHdpdGggYXJ0aWNsZXMgYW5kIHN1YnNjcmliZSB0byBuZXdzbGV0dGVycy4iCgogICAgICAgIFB1Ymxpc2hlciAtPiBIYXBweUhlYWRsaW5lcyAiVXNlcyIKICAgICAgICBSZWFkZXIgLT4gSGFwcHlIZWFkbGluZXMgIlVzZXMiCiAgICB9CgogICAgdmlld3MgewoKICAgICAgICBzeXN0ZW1Db250ZXh0IEhhcHB5SGVhZGxpbmVzICJTeXN0ZW1Db250ZXh0IiB7CiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgICAgICBhdXRvTGF5b3V0IGxyCiAgICAgICAgfQoKICAgICAgICBzdHlsZXMgewoKICAgICAgICAgICAgZWxlbWVudCAiUGVyc29uIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBQZXJzb24KICAgICAgICAgICAgICAgIGNvbG9yICNmZmZmZmYKICAgICAgICAgICAgfQoKICAgICAgICAgICAgZWxlbWVudCAiUHVibGlzaGVyIiB7CiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kICNmZmI4NGQKICAgICAgICAgICAgfQoKICAgICAgICAgICAgZWxlbWVudCAiUmVhZGVyIiB7CiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kICMxMmI4ZDAKICAgICAgICAgICAgfQoKICAgICAgICAgICAgZWxlbWVudCAiU29mdHdhcmUgU3lzdGVtIiB7CiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kICNmZjMzMzMKICAgICAgICAgICAgICAgIGNvbG9yICNmZmZmZmYKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KfQ==",
+    "structurizr.inspection.info" : "0",
+    "structurizr.inspection.ignore" : "0",
+    "structurizr.inspection.warning" : "0"
+  },
+  "views" : {
+    "configuration" : {
+      "styles" : {
+        "elements" : [ {
+          "color" : "#ffffff",
+          "shape" : "Person",
+          "tag" : "Person"
+        }, {
+          "background" : "#ffb84d",
+          "tag" : "Publisher"
+        }, {
+          "background" : "#12b8d0",
+          "tag" : "Reader"
+        }, {
+          "background" : "#ff3333",
+          "color" : "#ffffff",
+          "tag" : "Software System"
+        } ]
+      },
+      "terminology" : { }
+    },
+    "systemContextViews" : [ {
+      "automaticLayout" : {
+        "edgeSeparation" : 50,
+        "nodeSeparation" : 50,
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 100,
+        "vertices" : true
+      },
+      "elements" : [ {
+        "id" : "1",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "2",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "3",
+        "x" : 0,
+        "y" : 0
+      } ],
+      "enterpriseBoundaryVisible" : true,
+      "key" : "SystemContext",
+      "name" : "System Context View: Happy Headlines",
+      "order" : 1,
+      "relationships" : [ {
+        "id" : "4"
+      }, {
+        "id" : "5"
+      } ],
+      "softwareSystemId" : "3"
+    } ]
+  }
+}
