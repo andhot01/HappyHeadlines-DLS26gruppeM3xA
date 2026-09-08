@@ -12,6 +12,8 @@ builder.Services.AddSingleton<ArticleDbContextFactory>();
 
 var app = builder.Build();
 
+
+//makes sure dbs are created on startup
 using (var scope = app.Services.CreateScope())
 {
     var factory =
