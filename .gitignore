@@ -1,0 +1,19 @@
+# Build output
+bin/
+obj/
+
+# Visual Studio
+.vs/
+
+# Rider / JetBrains
+.idea/
+
+# VS Code local settings, optional
+.vscode/
+
+# User-specific files
+*.user
+*.suo
+
+# Logs
+*.log

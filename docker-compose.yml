@@ -1,4 +1,5 @@
 services:
+
   structurizr:
     image: structurizr/structurizr
     command: ["local"]
@@ -6,3 +7,131 @@ services:
       - "8081:8080"
     volumes:
       - ./docs:/usr/local/structurizr
+
+  article-db-africa:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: articles_africa
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+
+  article-db-antarctica:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: articles_antarctica
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+
+  article-db-asia:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: articles_asia
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5435:5432"
+
+  article-db-europe:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: articles_europe
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5436:5432"
+
+  article-db-north-america:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: articles_north_america
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5437:5432"
+
+  article-db-south-america:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: articles_south_america
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5438:5432"
+
+  article-db-oceania:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: articles_oceania
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5439:5432"
+
+  article-db-global:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: articles_global
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5440:5432"
+
+  article-service-1:
+    build:
+      context: ./ArticleService
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+    depends_on:
+      - article-db-africa
+      - article-db-antarctica
+      - article-db-asia
+      - article-db-europe
+      - article-db-north-america
+      - article-db-south-america
+      - article-db-oceania
+      - article-db-global
+
+  article-service-2:
+    build:
+      context: ./ArticleService
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+    depends_on:
+      - article-db-africa
+      - article-db-antarctica
+      - article-db-asia
+      - article-db-europe
+      - article-db-north-america
+      - article-db-south-america
+      - article-db-oceania
+      - article-db-global
+
+  article-service-3:
+    build:
+      context: ./ArticleService
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+    depends_on:
+      - article-db-africa
+      - article-db-antarctica
+      - article-db-asia
+      - article-db-europe
+      - article-db-north-america
+      - article-db-south-america
+      - article-db-oceania
+      - article-db-global
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - article-service-1
+      - article-service-2
+      - article-service-3

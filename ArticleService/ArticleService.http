@@ -1,0 +1,20 @@
+@ArticleService_HostAddress = http://localhost:8080
+POST http://localhost:5023/api/articles/Europe
+Content-Type: application/json
+
+{
+  "title": "European article",
+  "content": "This should only exist in the Europe database."
+}//first test - localhost changed since
+
+###
+
+GET http://localhost:8080/instance
+
+###
+
+GET http://localhost:8080/api/articles/Europe
+
+###
+
+GET http://localhost:8080/api/articles/Asia
