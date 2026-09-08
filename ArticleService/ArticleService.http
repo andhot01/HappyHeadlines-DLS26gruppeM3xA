@@ -1,6 +1,9 @@
 @ArticleService_HostAddress = http://localhost:5023
 
-GET {{ArticleService_HostAddress}}/weatherforecast/
-Accept: application/json
+POST {{ArticleService_HostAddress}}/api/articles/Europe
+Content-Type: application/json
 
-###
+{
+  "title": "New train service opens in Denmark",
+  "content": "A new train connection has opened."
+}
