@@ -45,4 +45,14 @@ public class ArticleDbContextFactory
 
         return new ArticleDbContext(options);
     }
+
+    public void EnsureDatabasesCreated()
+    {
+        foreach (Region region in Enum.GetValues<Region>())
+        {
+            using var context = Create(region);
+            context.Database.EnsureCreated();
+        }
+    
+    }
 }

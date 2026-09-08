@@ -1,4 +1,5 @@
 services:
+
   structurizr:
     image: structurizr/structurizr
     command: ["local"]
@@ -6,3 +7,75 @@ services:
       - "8081:8080"
     volumes:
       - ./docs:/usr/local/structurizr
+
+  article-db-africa:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: articles_africa
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+
+  article-db-antarctica:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: articles_antarctica
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+
+  article-db-asia:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: articles_asia
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5435:5432"
+
+  article-db-europe:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: articles_europe
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5436:5432"
+
+  article-db-north-america:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: articles_north_america
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5437:5432"
+
+  article-db-south-america:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: articles_south_america
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5438:5432"
+
+  article-db-oceania:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: articles_oceania
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5439:5432"
+
+  article-db-global:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: articles_global
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5440:5432"

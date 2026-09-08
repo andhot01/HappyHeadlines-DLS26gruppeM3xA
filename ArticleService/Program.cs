@@ -12,6 +12,14 @@ builder.Services.AddSingleton<ArticleDbContextFactory>();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var factory =
+        scope.ServiceProvider.GetRequiredService<ArticleDbContextFactory>();
+
+    factory.EnsureDatabasesCreated();
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

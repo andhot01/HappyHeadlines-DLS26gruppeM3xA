@@ -1,9 +1,27 @@
 @ArticleService_HostAddress = http://localhost:5023
 
-POST {{ArticleService_HostAddress}}/api/articles/Europe
+POST http://localhost:5023/api/articles/Europe
 Content-Type: application/json
 
 {
-  "title": "New train service opens in Denmark",
-  "content": "A new train connection has opened."
+  "title": "European article",
+  "content": "This should only exist in the Europe database."
 }
+
+###
+
+POST http://localhost:5023/api/articles/Asia
+Content-Type: application/json
+
+{
+  "title": "Asian article",
+  "content": "This should only exist in the Asia database."
+}
+
+###
+
+GET http://localhost:5023/api/articles/Europe
+
+###
+
+GET http://localhost:5023/api/articles/Asia
