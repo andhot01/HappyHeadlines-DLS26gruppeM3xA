@@ -79,3 +79,59 @@ services:
       POSTGRES_PASSWORD: postgres
     ports:
       - "5440:5432"
+
+  article-service-1:
+    build:
+      context: ./ArticleService
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+    depends_on:
+      - article-db-africa
+      - article-db-antarctica
+      - article-db-asia
+      - article-db-europe
+      - article-db-north-america
+      - article-db-south-america
+      - article-db-oceania
+      - article-db-global
+
+  article-service-2:
+    build:
+      context: ./ArticleService
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+    depends_on:
+      - article-db-africa
+      - article-db-antarctica
+      - article-db-asia
+      - article-db-europe
+      - article-db-north-america
+      - article-db-south-america
+      - article-db-oceania
+      - article-db-global
+
+  article-service-3:
+    build:
+      context: ./ArticleService
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+    depends_on:
+      - article-db-africa
+      - article-db-antarctica
+      - article-db-asia
+      - article-db-europe
+      - article-db-north-america
+      - article-db-south-america
+      - article-db-oceania
+      - article-db-global
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - article-service-1
+      - article-service-2
+      - article-service-3

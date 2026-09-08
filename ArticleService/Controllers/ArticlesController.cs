@@ -90,4 +90,13 @@ public class ArticlesController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpGet("/instance")]
+    public IActionResult GetInstance()
+    {
+        return Ok(new
+        {
+            Instance = Environment.MachineName
+        });
+    }
 }
