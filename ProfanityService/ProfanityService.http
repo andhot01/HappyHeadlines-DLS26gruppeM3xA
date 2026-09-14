@@ -1,0 +1,26 @@
+@ProfanityService_HostAddress = http://localhost:5117
+
+### Add profanity word
+POST {{ProfanityService_HostAddress}}/api/profanity
+Content-Type: application/json
+
+{
+  "word": "idiot"
+}
+
+### Get all profanity words
+GET {{ProfanityService_HostAddress}}/api/profanity
+
+### Check clean comment
+POST {{ProfanityService_HostAddress}}/api/profanity/check
+Content-Type: application/json
+
+"This is a perfectly normal comment."
+
+###
+
+### Check comment containing profanity
+POST {{ProfanityService_HostAddress}}/api/profanity/check
+Content-Type: application/json
+
+"This article was written by an idiot."
