@@ -21,34 +21,50 @@ public class CommentsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Comment>> Create(Comment comment)
     {
-        var client = _httpClientFactory.CreateClient("ProfanityService");
+        try
+        {
+            var client =
+                _httpClientFactory.CreateClient("ProfanityService");
 
-        var response = await client.PostAsJsonAsync(
-            "/api/profanity/check",
-            comment.Content);
+            var response = await client.PostAsJsonAsync(
+                "/api/profanity/check",
+                comment.Content);
 
-        if (!response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
+            {
+                return StatusCode(
+                    StatusCodes.Status503ServiceUnavailable,
+                    "Comment could not be checked for profanity.");
+            }
+
+            var result =
+                await response.Content
+                    .ReadFromJsonAsync<ProfanityCheckResponse>();
+
+            if (result?.ContainsProfanity == true)
+            {
+                return BadRequest("Comment contains profanity.");
+            }
+
+            var createdComment = _repository.Create(comment);
+
+            return CreatedAtAction(
+                nameof(GetById),
+                new { id = createdComment.Id },
+                createdComment);
+        }
+        catch (HttpRequestException)
         {
             return StatusCode(
                 StatusCodes.Status503ServiceUnavailable,
-                "ProfanityService is unavailable.");
+                "ProfanityService is currently unavailable. Comment was not saved.");
         }
-
-        var result =
-            await response.Content.ReadFromJsonAsync<ProfanityCheckResponse>();
-
-        if (result?.ContainsProfanity == true)
+        catch (Exception)
         {
-            return BadRequest("Comment contains profanity.");
+            return StatusCode(
+                StatusCodes.Status503ServiceUnavailable,
+                "ProfanityService is currently unavailable. Comment was not saved.");
         }
-    
-
-        var createdComment = _repository.Create(comment);
-
-        return CreatedAtAction(
-            nameof(GetById),
-            new { id = createdComment.Id },
-            createdComment);
     }
 
     [HttpGet("article/{articleId:guid}")]
