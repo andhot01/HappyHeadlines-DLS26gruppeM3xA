@@ -135,3 +135,12 @@ services:
       - article-service-1
       - article-service-2
       - article-service-3
+
+  comment-db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: comments
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5441:5432"

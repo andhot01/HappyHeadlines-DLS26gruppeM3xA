@@ -1,0 +1,16 @@
+@CommentService_HostAddress = http://localhost:5197
+
+@host = http://localhost:YOUR_PORT
+
+### Create comment
+POST {{CommentService_HostAddress}}/api/comments
+Content-Type: application/json
+
+{
+  "articleId": "11111111-1111-1111-1111-111111111111",
+  "author": "Andra",
+  "content": "This is a test comment."
+}
+
+### Get comments for article
+GET {{CommentService_HostAddress}}/api/comments/article/11111111-1111-1111-1111-111111111111
