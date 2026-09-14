@@ -16,7 +16,7 @@ builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services
     .AddHttpClient("ProfanityService", client =>
     {
-        client.BaseAddress = new Uri("http://localhost:5117");
+        client.BaseAddress = new Uri("http://profanity-service:8080");
     })
     .AddStandardResilienceHandler();
 

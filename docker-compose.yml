@@ -153,3 +153,24 @@ services:
       POSTGRES_PASSWORD: postgres
     ports:
       - "5442:5432"
+
+  comment-service:
+    build:
+      context: ./CommentService
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+    ports:
+      - "8082:8080"
+    depends_on:
+      - comment-db
+      - profanity-service
+
+  profanity-service:
+    build:
+      context: ./ProfanityService
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+    ports:
+      - "8083:8080"
+    depends_on:
+      - profanity-db
