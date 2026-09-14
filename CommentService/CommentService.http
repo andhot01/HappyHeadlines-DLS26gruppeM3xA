@@ -14,3 +14,27 @@ Content-Type: application/json
 
 ### Get comments for article
 GET {{CommentService_HostAddress}}/api/comments/article/11111111-1111-1111-1111-111111111111
+
+@host = http://localhost:5197
+
+### Clean comment - should be accepted
+POST {{CommentService_HostAddress}}/api/comments
+Content-Type: application/json
+
+{
+  "articleId": "11111111-1111-1111-1111-111111111111",
+  "author": "Anders",
+  "content": "This is a nice article."
+}
+
+###
+
+### Profane comment - should be rejected
+POST {{CommentService_HostAddress}}/api/comments
+Content-Type: application/json
+
+{
+  "articleId": "11111111-1111-1111-1111-111111111111",
+  "author": "Anders",
+  "content": "This article was written by an idiot."
+}

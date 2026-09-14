@@ -1,6 +1,7 @@
 using CommentService.Models;
 using CommentService.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Json;
 
 namespace CommentService.Controllers;
 
@@ -9,15 +10,39 @@ namespace CommentService.Controllers;
 public class CommentsController : ControllerBase
 {
     private readonly ICommentRepository _repository;
+    private readonly IHttpClientFactory _httpClientFactory;
 
-    public CommentsController(ICommentRepository repository)
+    public CommentsController(ICommentRepository repository, IHttpClientFactory httpClientFactory)
     {
         _repository = repository;
+        _httpClientFactory = httpClientFactory;
     }
 
     [HttpPost]
-    public ActionResult<Comment> Create(Comment comment)
+    public async Task<ActionResult<Comment>> Create(Comment comment)
     {
+        var client = _httpClientFactory.CreateClient("ProfanityService");
+
+        var response = await client.PostAsJsonAsync(
+            "/api/profanity/check",
+            comment.Content);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return StatusCode(
+                StatusCodes.Status503ServiceUnavailable,
+                "ProfanityService is unavailable.");
+        }
+
+        var result =
+            await response.Content.ReadFromJsonAsync<ProfanityCheckResponse>();
+
+        if (result?.ContainsProfanity == true)
+        {
+            return BadRequest("Comment contains profanity.");
+        }
+    
+
         var createdComment = _repository.Create(comment);
 
         return CreatedAtAction(
