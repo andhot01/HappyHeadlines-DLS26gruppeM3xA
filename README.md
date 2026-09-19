@@ -120,3 +120,58 @@ The complete flow can be tested through `CommentService`:
 A clean comment should return `201 Created`, while a comment containing a word stored in `ProfanityDatabase` should return `400 Bad Request`.
 
 Fault isolation can be tested by stopping `profanity-service` and posting another comment. The POST should return `503 Service Unavailable`, while requests for existing comments should continue to return `200 OK`.
+
+
+# Week 38 – DraftService, Logging and Tracing
+
+This week focused on implementing the DraftService and adding reusable
+observability to the HappyHeadlines architecture.
+
+## DraftService
+
+A new DraftService was implemented together with a PostgreSQL DraftDatabase.
+
+The service supports CRUD operations for drafts:
+
+- `GET /api/draft` – Get all drafts
+- `GET /api/draft/{id}` – Get a specific draft
+- `POST /api/draft` – Create a draft
+- `PUT /api/draft/{id}` – Update a draft
+- `DELETE /api/draft/{id}` – Delete a draft
+
+Entity Framework Core is used for communication with the DraftDatabase.
+
+## Centralized Observability
+
+A shared `Observability` class library was added under:
+
+`Shared/Observability`
+
+The purpose of this project is to keep logging and tracing configuration
+centralized and reusable instead of configuring it separately in every
+microservice.
+
+Services can enable the shared configuration through extension methods such as:
+
+```csharp
+builder.Logging.AddHappyHeadlinesLogging();
+builder.Services.AddHappyHeadlinesTracing("DraftService");
+
+### Logging
+
+Logging is used to record important events that happen while the system is
+running.
+
+Structured logging was added to DraftService. Instead of logging everything,
+the service focuses on events that are useful when monitoring or debugging the
+system:
+
+- `Information` is used when a draft is successfully created, updated or deleted.
+- `Warning` is used when an operation references a draft that does not exist.
+- `Error` is reserved for unexpected failures.
+
+For example, when a draft is created, its ID is included as a structured value:
+
+```text
+info: DraftService.Controllers.DraftController
+      Draft 2 created
