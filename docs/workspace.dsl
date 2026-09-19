@@ -14,6 +14,10 @@ workspace {
             tags "Reader"
         }
 
+        OperationsEngineer = person "Operations Engineer" "Monitors the health and performance of Happy Headlines." {
+            tags "Operations"
+        }
+
 
         // =========================================================
         // SOFTWARE SYSTEM
@@ -31,6 +35,15 @@ workspace {
 
             Website = container "Website" "Allows readers to read articles, comment and subscribe." "Web application" {
                 tags "WebApp"
+            }
+
+
+            // -----------------------------------------------------
+            // MONITORING
+            // -----------------------------------------------------
+           
+            TelemetryCollector = container "OpenTelemetry Collector" "Collects metrics, logs and traces from Happy Headlines and forwards them to the external observability platform." "OpenTelemetry Collector" {
+                tags "Monitoring"
             }
 
 
@@ -105,6 +118,11 @@ workspace {
             }
         }
 
+        ObservabilityPlatform = softwareSystem "Observability Platform" "External monitoring platform used to visualize metrics, logs and distributed traces." {
+            tags "Monitoring"
+        }
+
+
 
         // =========================================================
         // RELATIONSHIPS
@@ -140,6 +158,24 @@ workspace {
         // Newsletter workflow
         ArticleService -> NewsletterService "Provides recent articles"
         SubscriberService -> NewsletterService "Provides active subscriber information"
+
+        //Monitoring lvl 1
+        OperationsEngineer -> ObservabilityPlatform "Monitors system health and investigates incidents"
+        HappyHeadlines -> ObservabilityPlatform "Sends metrics, logs and traces"
+
+        // Monitoring lvl 2
+        Webapp -> TelemetryCollector "Sends telemetry"
+        Website -> TelemetryCollector "Sends telemetry"
+
+        DraftService -> TelemetryCollector "Sends metrics, logs and traces"
+        PublisherService -> TelemetryCollector "Sends metrics, logs and traces"
+        ProfanityService -> TelemetryCollector "Sends metrics, logs and traces"
+        ArticleService -> TelemetryCollector "Sends metrics, logs and traces"
+        CommentService -> TelemetryCollector "Sends metrics, logs and traces"
+        SubscriberService -> TelemetryCollector "Sends metrics, logs and traces"
+        NewsletterService -> TelemetryCollector "Sends metrics, logs and traces"
+
+        TelemetryCollector -> ObservabilityPlatform "Exports metrics, logs and traces"
     }
 
 
@@ -152,7 +188,9 @@ workspace {
         systemContext HappyHeadlines "SystemContext" {
             include Publisher
             include Reader
+            include OperationsEngineer
             include HappyHeadlines
+            include ObservabilityPlatform
 
             autoLayout lr
         }
@@ -220,6 +258,16 @@ workspace {
 
             element "Queue" {
                 background #d995e5
+                color #ffffff
+            }
+
+            element "Monitoring" {
+                background #4CAF50
+                color #ffffff
+            }
+
+            element "Operations" {
+                background #4CAF50
                 color #ffffff
             }
         }
