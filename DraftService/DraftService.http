@@ -1,0 +1,32 @@
+@baseUrl = http://localhost:5062
+
+### Get all drafts
+GET {{baseUrl}}/api/draft
+
+
+### Create draft
+POST {{baseUrl}}/api/draft
+Content-Type: application/json
+
+{
+  "title": "My first Happy Headline",
+  "content": "This article is still a draft."
+}
+
+
+### Get draft by ID
+GET {{baseUrl}}/api/draft/1
+
+
+### Update draft
+PUT {{baseUrl}}/api/draft/1
+Content-Type: application/json
+
+{
+  "title": "My updated Happy Headline",
+  "content": "The draft has now been updated."
+}
+
+
+### Delete draft
+DELETE {{baseUrl}}/api/draft/1

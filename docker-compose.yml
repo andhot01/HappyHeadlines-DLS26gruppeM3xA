@@ -174,3 +174,17 @@ services:
       - "8083:8080"
     depends_on:
       - profanity-db
+
+  draftdb:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: draftdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - draftdb_data:/var/lib/postgresql/data
+
+volumes:
+  draftdb_data:
