@@ -1,7 +1,11 @@
 using DraftService.Data;
 using Microsoft.EntityFrameworkCore;
+using Observability;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.AddHappyHeadlinesLogging();
+builder.Services.AddHappyHeadlinesTracing("DraftService");
 
 builder.Services.AddControllers();
 

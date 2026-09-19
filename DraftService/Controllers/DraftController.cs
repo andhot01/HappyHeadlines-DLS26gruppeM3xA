@@ -10,10 +10,12 @@ namespace DraftService.Controllers;
 public class DraftController : ControllerBase
 {
     private readonly DraftDbContext _context;
+    private readonly ILogger<DraftController> _logger;
 
-    public DraftController(DraftDbContext context)
+    public DraftController(DraftDbContext context, ILogger<DraftController> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -29,6 +31,10 @@ public class DraftController : ControllerBase
 
         if (draft == null)
         {
+            _logger.LogWarning(
+                "Draft {DraftId} was not found",
+                id);
+
             return NotFound();
         }
 
@@ -45,6 +51,10 @@ public class DraftController : ControllerBase
         _context.Drafts.Add(draft);
         await _context.SaveChangesAsync();
 
+        _logger.LogInformation(
+            "Draft {DraftId} created",
+            draft.Id);
+
         return CreatedAtAction(
             nameof(GetById),
             new { id = draft.Id },
@@ -58,6 +68,10 @@ public class DraftController : ControllerBase
 
         if (draft == null)
         {
+            _logger.LogWarning(
+                "Cannot update draft {DraftId}: draft was not found",
+                id);
+
             return NotFound();
         }
 
@@ -66,6 +80,10 @@ public class DraftController : ControllerBase
         draft.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
+
+        _logger.LogInformation(
+            "Draft {DraftId} updated",
+            id);
 
         return NoContent();
     }
@@ -77,11 +95,19 @@ public class DraftController : ControllerBase
 
         if (draft == null)
         {
+            _logger.LogWarning(
+                "Cannot delete draft {DraftId}: draft was not found",
+                id);
+
             return NotFound();
         }
 
         _context.Drafts.Remove(draft);
         await _context.SaveChangesAsync();
+
+        _logger.LogInformation(
+            "Draft {DraftId} deleted",
+            id);
 
         return NoContent();
     }
