@@ -217,5 +217,22 @@ services:
       retries: 5
       start_period: 10s
 
+  newsletter-service:
+    build:
+      context: .
+      dockerfile: NewsletterService/Dockerfile
+    container_name: newsletter-service
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+      RabbitMQ__Host: article-queue
+    ports:
+      - "8085:8080"
+    depends_on:
+      article-queue:
+        condition: service_healthy
+      jaeger:
+        condition: service_started
+
 volumes:
   draftdb_data:

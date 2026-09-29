@@ -20,3 +20,25 @@ Content-Type: application/json
   "content": "Testing trace propagation from PublisherService through RabbitMQ to ArticleService.",
   "region": "Europe"
 }
+
+###
+
+POST {{host}}/api/publisher/publish
+Content-Type: application/json
+
+{
+  "title": "Fanout Exchange Test",
+  "content": "Testing distributed tracing after changing to a fanout exchange.",
+  "region": "Europe"
+}
+
+###
+
+POST {{host}}/api/publisher/publish
+Content-Type: application/json
+
+{
+  "title": "Newsletter Fanout Test",
+  "content": "Testing one published article across ArticleService and NewsletterService.",
+  "region": "Europe"
+}
