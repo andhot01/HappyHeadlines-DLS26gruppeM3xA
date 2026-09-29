@@ -9,3 +9,14 @@ Content-Type: application/json
   "content": "Something wonderful happened today!",
   "region": "Europe"
 }
+
+###
+
+POST {{host}}/api/publisher/publish
+Content-Type: application/json
+
+{
+  "title": "Distributed Tracing Test",
+  "content": "Testing trace propagation from PublisherService through RabbitMQ to ArticleService.",
+  "region": "Europe"
+}

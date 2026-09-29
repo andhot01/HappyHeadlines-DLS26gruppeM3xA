@@ -94,6 +94,7 @@ services:
     environment:
       ASPNETCORE_URLS: http://+:8080
       OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+      RabbitMQ__Host: article-queue
     ports:
       - "8084:8080"
     depends_on:
@@ -113,6 +114,7 @@ services:
     environment:
       ASPNETCORE_URLS: http://+:8080
       OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+      RabbitMQ__Host: article-queue
     depends_on:
       - article-db-africa
       - article-db-antarctica
@@ -130,6 +132,7 @@ services:
     environment:
       ASPNETCORE_URLS: http://+:8080
       OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+      RabbitMQ__Host: article-queue
     depends_on:
       - article-db-africa
       - article-db-antarctica

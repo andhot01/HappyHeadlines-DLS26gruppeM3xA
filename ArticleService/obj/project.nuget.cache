@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "uz8IjZlI7QY=",
+  "dgSpecHash": "vlvJ1czT/Ac=",
   "success": true,
   "projectFilePath": "C:\\Users\\andra\\Documents\\GitHub\\HappyHeadlines-DLS26gruppeM3xA\\ArticleService\\ArticleService.csproj",
   "expectedPackageFiles": [
@@ -33,6 +33,7 @@
     "C:\\Users\\andra\\.nuget\\packages\\opentelemetry.extensions.hosting\\1.19.0\\opentelemetry.extensions.hosting.1.19.0.nupkg.sha512",
     "C:\\Users\\andra\\.nuget\\packages\\opentelemetry.instrumentation.aspnetcore\\1.19.0\\opentelemetry.instrumentation.aspnetcore.1.19.0.nupkg.sha512",
     "C:\\Users\\andra\\.nuget\\packages\\opentelemetry.instrumentation.http\\1.19.0\\opentelemetry.instrumentation.http.1.19.0.nupkg.sha512",
+    "C:\\Users\\andra\\.nuget\\packages\\rabbitmq.client\\7.2.2\\rabbitmq.client.7.2.2.nupkg.sha512",
     "C:\\Users\\andra\\.nuget\\packages\\system.codedom\\6.0.0\\system.codedom.6.0.0.nupkg.sha512",
     "C:\\Users\\andra\\.nuget\\packages\\system.composition\\9.0.0\\system.composition.9.0.0.nupkg.sha512",
     "C:\\Users\\andra\\.nuget\\packages\\system.composition.attributedmodel\\9.0.0\\system.composition.attributedmodel.9.0.0.nupkg.sha512",
