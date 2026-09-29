@@ -1,5 +1,12 @@
 services:
 
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    ports:
+      - "16686:16686"
+      - "4317:4317"
+
   structurizr:
     image: structurizr/structurizr
     command: ["local"]
@@ -82,9 +89,13 @@ services:
 
   article-service-1:
     build:
-      context: ./ArticleService
+      context: .
+      dockerfile: ArticleService/Dockerfile
     environment:
       ASPNETCORE_URLS: http://+:8080
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+    ports:
+      - "8084:8080"
     depends_on:
       - article-db-africa
       - article-db-antarctica
@@ -97,9 +108,11 @@ services:
 
   article-service-2:
     build:
-      context: ./ArticleService
+      context: .
+      dockerfile: ArticleService/Dockerfile
     environment:
       ASPNETCORE_URLS: http://+:8080
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
     depends_on:
       - article-db-africa
       - article-db-antarctica
@@ -112,9 +125,11 @@ services:
 
   article-service-3:
     build:
-      context: ./ArticleService
+      context: .
+      dockerfile: ArticleService/Dockerfile
     environment:
       ASPNETCORE_URLS: http://+:8080
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
     depends_on:
       - article-db-africa
       - article-db-antarctica
@@ -182,7 +197,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5434:5432"
+      - "5443:5432"
     volumes:
       - draftdb_data:/var/lib/postgresql/data
 

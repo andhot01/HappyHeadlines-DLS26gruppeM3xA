@@ -5,11 +5,19 @@ EXPOSE 8080
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
-COPY ["ArticleService.csproj", "./"]
-RUN dotnet restore "ArticleService.csproj"
+# Copy project files first for dependency restore
+COPY ["ArticleService/ArticleService.csproj", "ArticleService/"]
+COPY ["Shared/Observability/Observability.csproj", "Shared/Observability/"]
 
-COPY . .
-RUN dotnet publish "ArticleService.csproj" -c Release -o /app/publish
+RUN dotnet restore "ArticleService/ArticleService.csproj"
+
+# Copy source code
+COPY ["ArticleService/", "ArticleService/"]
+COPY ["Shared/Observability/", "Shared/Observability/"]
+
+# Publish
+WORKDIR "/src/ArticleService"
+RUN dotnet publish "ArticleService.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

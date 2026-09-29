@@ -1,11 +1,13 @@
 using ArticleService.Repositories;
 using ArticleService.Data;
+using Observability;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
 builder.Services.AddOpenApi();
+builder.Services.AddHappyHeadlinesTracing("ArticleService");
 
 builder.Services.AddSingleton<IArticleRepository, ArticleRepository>();
 builder.Services.AddSingleton<ArticleDbContextFactory>();
