@@ -42,11 +42,24 @@ public class ArticleQueueConsumer : BackgroundService
         _channel = await _connection.CreateChannelAsync(
             cancellationToken: stoppingToken);
 
+        await _channel.ExchangeDeclareAsync(
+            exchange: "articles",
+            type: ExchangeType.Fanout,
+            durable: true,
+            autoDelete: false,
+            cancellationToken: stoppingToken);
+
         await _channel.QueueDeclareAsync(
-            queue: "articles",
+            queue: "article-service-articles",
             durable: true,
             exclusive: false,
             autoDelete: false,
+            cancellationToken: stoppingToken);
+
+        await _channel.QueueBindAsync(
+            queue: "article-service-articles",
+            exchange: "articles",
+            routingKey: "",
             cancellationToken: stoppingToken);
 
         var consumer = new AsyncEventingBasicConsumer(_channel);
@@ -133,7 +146,7 @@ public class ArticleQueueConsumer : BackgroundService
         };
 
         await _channel.BasicConsumeAsync(
-            queue: "articles",
+            queue: "article-service-articles",
             autoAck: false,
             consumer: consumer,
             cancellationToken: stoppingToken);

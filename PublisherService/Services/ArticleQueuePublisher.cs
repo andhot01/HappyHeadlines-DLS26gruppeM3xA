@@ -26,10 +26,10 @@ public class ArticleQueuePublisher
         await using var connection = await _factory.CreateConnectionAsync();
         await using var channel = await connection.CreateChannelAsync();
 
-        await channel.QueueDeclareAsync(
-            queue: "articles",
+        await channel.ExchangeDeclareAsync(
+            exchange: "articles",
+            type: ExchangeType.Fanout,
             durable: true,
-            exclusive: false,
             autoDelete: false);
 
         var json = JsonSerializer.Serialize(article);
@@ -62,8 +62,8 @@ public class ArticleQueuePublisher
         }
 
         await channel.BasicPublishAsync(
-            exchange: "",
-            routingKey: "articles",
+            exchange: "articles",
+            routingKey: "",
             mandatory: false,
             basicProperties: properties,
             body: body);
