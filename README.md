@@ -153,7 +153,6 @@ microservice.
 
 Services can enable the shared configuration through extension methods such as:
 
-```csharp
 builder.Logging.AddHappyHeadlinesLogging();
 builder.Services.AddHappyHeadlinesTracing("DraftService");
 
@@ -172,6 +171,90 @@ system:
 
 For example, when a draft is created, its ID is included as a structured value:
 
-```text
 info: DraftService.Controllers.DraftController
       Draft 2 created
+
+
+
+# Week 39
+
+This week focused on distributed tracing across service boundaries and implementing the publishing and newsletter flow using RabbitMQ.
+
+
+## PublisherService
+
+`PublisherService` is responsible for publishing new articles.
+
+When an article is published, the service does not communicate directly with the consumers. Instead, the article is published to the RabbitMQ `ArticleQueue`.
+
+
+`PublisherService` has been added to Docker Compose and is exposed on port `8086`.
+
+## RabbitMQ and fanout messaging
+
+RabbitMQ is used for asynchronous communication between the services.
+
+A fanout exchange is used so that the same published article can be received independently by multiple consumers.
+
+
+`ArticleService` consumes published articles so they can be persisted in the appropriate regional ArticleDatabase.
+
+`NewsletterService` also receives the published article so that it can react independently without being directly coupled to `ArticleService`.
+
+This allows both services to react to the same event without requiring direct communication between the consumers.
+
+## NewsletterService
+
+`NewsletterService` was implemented to handle newsletter functionality.
+
+For a daily newsletter, the service requests articles from `ArticleService` through the NGINX load balancer:
+
+`Client --> NewsletterService --> NGINX --> ArticleService --> ArticleDatabase`
+
+`NewsletterService` is exposed on port `8085`.
+
+The daily newsletter endpoint can be tested with:
+
+`GET http://localhost:8085/api/newsletter/daily/Europe`
+
+The service selects the latest article returned for the requested region and includes it in the daily newsletter response.
+
+## Distributed tracing
+
+The shared OpenTelemetry configuration from Week 38 is used by:
+
+- `PublisherService`
+- `ArticleService`
+- `NewsletterService`
+
+All traces are exported to the central Jaeger instance.
+
+Trace context is propagated when crossing service boundaries so that a complete operation can be followed across multiple microservices.
+
+
+A request to the daily newsletter endpoint produces a single trace containing spans from both `NewsletterService` and `ArticleService`.
+
+Distributed tracing was also implemented across RabbitMQ.
+
+When `PublisherService` publishes an article, the trace context is propagated with the message and restored by the consumers.
+
+
+A test publication produced one trace in Jaeger containing spans from all three services:
+
+- `PublisherService`
+- `ArticleService`
+- `NewsletterService`
+
+This demonstrates that the trace is not broken when crossing either HTTP or asynchronous messaging boundaries.
+
+## Centralized tracing with Jaeger
+
+Jaeger is used as the central location for collecting and inspecting distributed traces.
+
+The Jaeger UI is available at:
+
+`http://localhost:16686`
+
+This makes it possible to follow a request across service boundaries and identify which services participated in an operation.
+
+For example, publishing a single article can be followed from `PublisherService`, through RabbitMQ, and into both `ArticleService` and `NewsletterService` as one distributed trace.
