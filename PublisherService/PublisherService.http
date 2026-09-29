@@ -1,0 +1,11 @@
+@host = http://localhost:5095
+
+### Publish an article
+POST {{host}}/api/publisher/publish
+Content-Type: application/json
+
+{
+  "title": "A Happy Headline",
+  "content": "Something wonderful happened today!",
+  "region": "Europe"
+}
