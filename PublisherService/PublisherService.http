@@ -1,4 +1,4 @@
-@host = http://localhost:5095
+@host = http://localhost:8086
 
 ### Publish an article
 POST {{host}}/api/publisher/publish

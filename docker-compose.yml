@@ -237,5 +237,21 @@ services:
       nginx:
         condition: service_started
 
+  publisher-service:
+    build:
+      context: .
+      dockerfile: PublisherService/Dockerfile
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+      RabbitMQ__Host: article-queue
+    ports:
+      - "8086:8080"
+    depends_on:
+      article-queue:
+        condition: service_healthy
+      jaeger:
+        condition: service_started
+
 volumes:
   draftdb_data:
