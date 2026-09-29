@@ -10,6 +10,13 @@ builder.Services.AddHappyHeadlinesTracing("NewsletterService");
 
 builder.Services.AddHostedService<NewsletterArticleConsumer>();
 
+builder.Services.AddHttpClient<ArticleServiceClient>(client =>
+{
+    client.BaseAddress = new Uri(
+        builder.Configuration["ArticleService:BaseUrl"]
+        ?? "http://localhost:8080");
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

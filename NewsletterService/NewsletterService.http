@@ -1,6 +1,3 @@
 @NewsletterService_HostAddress = http://localhost:5002
 
-GET {{NewsletterService_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
+GET http://localhost:8085/api/newsletter/daily/Europe

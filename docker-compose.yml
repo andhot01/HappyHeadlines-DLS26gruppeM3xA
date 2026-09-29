@@ -226,12 +226,15 @@ services:
       ASPNETCORE_URLS: http://+:8080
       OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
       RabbitMQ__Host: article-queue
+      ArticleService__BaseUrl: http://nginx
     ports:
       - "8085:8080"
     depends_on:
       article-queue:
         condition: service_healthy
       jaeger:
+        condition: service_started
+      nginx:
         condition: service_started
 
 volumes:
