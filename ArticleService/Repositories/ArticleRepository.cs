@@ -35,8 +35,15 @@ public class ArticleRepository : IArticleRepository
     {
         using var context = _contextFactory.Create(article.Region);
 
-        article.Id = Guid.NewGuid();
-        article.PublishedAt = DateTime.UtcNow;
+        if (article.Id == Guid.Empty)
+        {
+            article.Id = Guid.NewGuid();
+        }
+
+        if (article.PublishedAt == default)
+        {
+            article.PublishedAt = DateTime.UtcNow;
+        }
 
         context.Articles.Add(article);
         context.SaveChanges();

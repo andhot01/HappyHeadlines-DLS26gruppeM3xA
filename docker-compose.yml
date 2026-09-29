@@ -1,5 +1,12 @@
 services:
 
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    ports:
+      - "16686:16686"
+      - "4317:4317"
+
   structurizr:
     image: structurizr/structurizr
     command: ["local"]
@@ -82,9 +89,14 @@ services:
 
   article-service-1:
     build:
-      context: ./ArticleService
+      context: .
+      dockerfile: ArticleService/Dockerfile
     environment:
       ASPNETCORE_URLS: http://+:8080
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+      RabbitMQ__Host: article-queue
+    ports:
+      - "8084:8080"
     depends_on:
       - article-db-africa
       - article-db-antarctica
@@ -97,9 +109,12 @@ services:
 
   article-service-2:
     build:
-      context: ./ArticleService
+      context: .
+      dockerfile: ArticleService/Dockerfile
     environment:
       ASPNETCORE_URLS: http://+:8080
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+      RabbitMQ__Host: article-queue
     depends_on:
       - article-db-africa
       - article-db-antarctica
@@ -112,9 +127,12 @@ services:
 
   article-service-3:
     build:
-      context: ./ArticleService
+      context: .
+      dockerfile: ArticleService/Dockerfile
     environment:
       ASPNETCORE_URLS: http://+:8080
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+      RabbitMQ__Host: article-queue
     depends_on:
       - article-db-africa
       - article-db-antarctica
@@ -182,9 +200,58 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5434:5432"
+      - "5443:5432"
     volumes:
       - draftdb_data:/var/lib/postgresql/data
+
+  article-queue:
+    image: rabbitmq:3-management
+    container_name: article-queue
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  newsletter-service:
+    build:
+      context: .
+      dockerfile: NewsletterService/Dockerfile
+    container_name: newsletter-service
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+      RabbitMQ__Host: article-queue
+      ArticleService__BaseUrl: http://nginx
+    ports:
+      - "8085:8080"
+    depends_on:
+      article-queue:
+        condition: service_healthy
+      jaeger:
+        condition: service_started
+      nginx:
+        condition: service_started
+
+  publisher-service:
+    build:
+      context: .
+      dockerfile: PublisherService/Dockerfile
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+      RabbitMQ__Host: article-queue
+    ports:
+      - "8086:8080"
+    depends_on:
+      article-queue:
+        condition: service_healthy
+      jaeger:
+        condition: service_started
 
 volumes:
   draftdb_data:

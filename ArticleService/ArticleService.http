@@ -13,7 +13,7 @@ GET http://localhost:8080/instance
 
 ###
 
-GET http://localhost:8080/api/articles/Europe
+GET http://localhost:8084/api/articles/Europe
 
 ###
 
