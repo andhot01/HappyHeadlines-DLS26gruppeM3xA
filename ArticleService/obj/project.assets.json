@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "targets": {
     "net10.0": {
       "Humanizer.Core/2.14.1": {
@@ -671,6 +671,38 @@
           }
         }
       },
+      "prometheus-net/8.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net7.0/Prometheus.NetStandard.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net7.0/Prometheus.NetStandard.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "prometheus-net.AspNetCore/8.2.1": {
+        "type": "package",
+        "dependencies": {
+          "prometheus-net": "8.2.1"
+        },
+        "compile": {
+          "lib/net6.0/Prometheus.AspNetCore.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/Prometheus.AspNetCore.dll": {
+            "related": ".xml"
+          }
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
+      },
       "RabbitMQ.Client/7.2.2": {
         "type": "package",
         "compile": {
@@ -682,6 +714,35 @@
           "lib/net8.0/RabbitMQ.Client.dll": {
             "related": ".xml"
           }
+        }
+      },
+      "RESPite/3.3.1": {
+        "type": "package",
+        "compile": {
+          "lib/net10.0/RESPite.dll": {}
+        },
+        "runtime": {
+          "lib/net10.0/RESPite.dll": {}
+        }
+      },
+      "StackExchange.Redis/3.3.1": {
+        "type": "package",
+        "dependencies": {
+          "RESPite": "3.3.1",
+          "System.IO.Hashing": "10.0.12"
+        },
+        "compile": {
+          "lib/net10.0/StackExchange.Redis.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/StackExchange.Redis.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "build/StackExchange.Redis.props": {}
         }
       },
       "System.CodeDom/6.0.0": {
@@ -803,6 +864,22 @@
         },
         "runtime": {
           "lib/net9.0/System.Composition.TypedParts.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net8.0/_._": {}
+        }
+      },
+      "System.IO.Hashing/10.0.12": {
+        "type": "package",
+        "compile": {
+          "lib/net10.0/System.IO.Hashing.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/System.IO.Hashing.dll": {
             "related": ".xml"
           }
         },
@@ -2407,6 +2484,42 @@
         "opentelemetry.instrumentation.http.nuspec"
       ]
     },
+    "prometheus-net/8.2.1": {
+      "sha512": "3wVgdEPOCBF752s2xps5T+VH+c9mJK8S8GKEDg49084P6JZMumTZI5Te6aJ9MQpX0sx7om6JOnBpIi7ZBmmiDQ==",
+      "type": "package",
+      "path": "prometheus-net/8.2.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/net462/Prometheus.NetStandard.dll",
+        "lib/net462/Prometheus.NetStandard.xml",
+        "lib/net6.0/Prometheus.NetStandard.dll",
+        "lib/net6.0/Prometheus.NetStandard.xml",
+        "lib/net7.0/Prometheus.NetStandard.dll",
+        "lib/net7.0/Prometheus.NetStandard.xml",
+        "lib/netstandard2.0/Prometheus.NetStandard.dll",
+        "lib/netstandard2.0/Prometheus.NetStandard.xml",
+        "prometheus-net-logo.png",
+        "prometheus-net.8.2.1.nupkg.sha512",
+        "prometheus-net.nuspec"
+      ]
+    },
+    "prometheus-net.AspNetCore/8.2.1": {
+      "sha512": "/4TfTvbwIDqpaKTiWvEsjUywiHYF9zZvGZF5sK15avoDsUO/WPQbKsF8TiMaesuphdFQPK2z52P0zk6j26V0rQ==",
+      "type": "package",
+      "path": "prometheus-net.aspnetcore/8.2.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/net6.0/Prometheus.AspNetCore.dll",
+        "lib/net6.0/Prometheus.AspNetCore.xml",
+        "prometheus-net-logo.png",
+        "prometheus-net.aspnetcore.8.2.1.nupkg.sha512",
+        "prometheus-net.aspnetcore.nuspec"
+      ]
+    },
     "RabbitMQ.Client/7.2.2": {
       "sha512": "k4b6RnTXpLbsF96V93ooNYxgPMnoA2tEm24B6AXNJr1mG8wwNYdA1XJtgU66L5xqeGyveS7SJriRzlX3cbqQNA==",
       "type": "package",
@@ -2422,6 +2535,50 @@
         "lib/netstandard2.0/RabbitMQ.Client.xml",
         "rabbitmq.client.7.2.2.nupkg.sha512",
         "rabbitmq.client.nuspec"
+      ]
+    },
+    "RESPite/3.3.1": {
+      "sha512": "1Ky6rOjP9YjA8eXWWSJDTSRgVQiRXwsKnET+X5hDuONJqq8KbYLQrTUjMg8gsdyKzwj74ivEioTuQd4mVhthdQ==",
+      "type": "package",
+      "path": "respite/3.3.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net10.0/RESPite.dll",
+        "lib/net461/RESPite.dll",
+        "lib/net472/RESPite.dll",
+        "lib/net8.0/RESPite.dll",
+        "lib/netstandard2.0/RESPite.dll",
+        "readme.md",
+        "respite.3.3.1.nupkg.sha512",
+        "respite.nuspec",
+        "seredis.png"
+      ]
+    },
+    "StackExchange.Redis/3.3.1": {
+      "sha512": "AnA3ZuYnOQl2Hh/PXqV+JagA6QO8hiHovHBOc0PKz+uafVSsI0lYPQy8D0rklCC5Wpmc9MznEw+Lpt8e+LaB9w==",
+      "type": "package",
+      "path": "stackexchange.redis/3.3.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "analyzers/dotnet/cs/StackExchange.Redis.Build.dll",
+        "analyzers/dotnet/cs/StackExchange.Redis.CodeFixes.dll",
+        "build/StackExchange.Redis.props",
+        "lib/net10.0/StackExchange.Redis.dll",
+        "lib/net10.0/StackExchange.Redis.xml",
+        "lib/net461/StackExchange.Redis.dll",
+        "lib/net461/StackExchange.Redis.xml",
+        "lib/net472/StackExchange.Redis.dll",
+        "lib/net472/StackExchange.Redis.xml",
+        "lib/net8.0/StackExchange.Redis.dll",
+        "lib/net8.0/StackExchange.Redis.xml",
+        "lib/netstandard2.0/StackExchange.Redis.dll",
+        "lib/netstandard2.0/StackExchange.Redis.xml",
+        "seredis.png",
+        "stackexchange.redis.3.3.1.nupkg.sha512",
+        "stackexchange.redis.nuspec"
       ]
     },
     "System.CodeDom/6.0.0": {
@@ -2610,6 +2767,35 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "System.IO.Hashing/10.0.12": {
+      "sha512": "jDix4bBMYnpZdSPcnY+KDV6ik3SRMzpMKby/bZl/XUwIiflwRNAFZ0oOl61R/pSaveIJ8t1gs2BUlrGsPs/bcg==",
+      "type": "package",
+      "path": "system.io.hashing/10.0.12",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/System.IO.Hashing.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net8.0/_._",
+        "buildTransitive/netcoreapp2.0/System.IO.Hashing.targets",
+        "lib/net10.0/System.IO.Hashing.dll",
+        "lib/net10.0/System.IO.Hashing.xml",
+        "lib/net462/System.IO.Hashing.dll",
+        "lib/net462/System.IO.Hashing.xml",
+        "lib/net8.0/System.IO.Hashing.dll",
+        "lib/net8.0/System.IO.Hashing.xml",
+        "lib/net9.0/System.IO.Hashing.dll",
+        "lib/net9.0/System.IO.Hashing.xml",
+        "lib/netstandard2.0/System.IO.Hashing.dll",
+        "lib/netstandard2.0/System.IO.Hashing.xml",
+        "system.io.hashing.10.0.12.nupkg.sha512",
+        "system.io.hashing.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
     "Observability/1.0.0": {
       "type": "project",
       "path": "../Shared/Observability/Observability.csproj",
@@ -2622,23 +2808,25 @@
       "Microsoft.EntityFrameworkCore.Design >= 10.0.11",
       "Npgsql.EntityFrameworkCore.PostgreSQL >= 10.0.3",
       "Observability >= 1.0.0",
-      "RabbitMQ.Client >= 7.2.2"
+      "RabbitMQ.Client >= 7.2.2",
+      "StackExchange.Redis >= 3.3.1",
+      "prometheus-net.AspNetCore >= 8.2.1"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\andra\\.nuget\\packages\\": {}
+    "/Users/malenevonwildenradt/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\andra\\Documents\\GitHub\\HappyHeadlines-DLS26gruppeM3xA\\ArticleService\\ArticleService.csproj",
+      "projectUniqueName": "/Users/malenevonwildenradt/RiderProjects/HappyHeadlines-DLS26gruppeM3xA/ArticleService/ArticleService.csproj",
       "projectName": "ArticleService",
-      "projectPath": "C:\\Users\\andra\\Documents\\GitHub\\HappyHeadlines-DLS26gruppeM3xA\\ArticleService\\ArticleService.csproj",
-      "packagesPath": "C:\\Users\\andra\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\andra\\Documents\\GitHub\\HappyHeadlines-DLS26gruppeM3xA\\ArticleService\\obj\\",
+      "projectPath": "/Users/malenevonwildenradt/RiderProjects/HappyHeadlines-DLS26gruppeM3xA/ArticleService/ArticleService.csproj",
+      "packagesPath": "/Users/malenevonwildenradt/.nuget/packages/",
+      "outputPath": "/Users/malenevonwildenradt/RiderProjects/HappyHeadlines-DLS26gruppeM3xA/ArticleService/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\andra\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/Users/malenevonwildenradt/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net10.0"
@@ -2648,10 +2836,11 @@
       },
       "frameworks": {
         "net10.0": {
+          "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {
-            "C:\\Users\\andra\\Documents\\GitHub\\HappyHeadlines-DLS26gruppeM3xA\\Shared\\Observability\\Observability.csproj": {
-              "projectPath": "C:\\Users\\andra\\Documents\\GitHub\\HappyHeadlines-DLS26gruppeM3xA\\Shared\\Observability\\Observability.csproj"
+            "/Users/malenevonwildenradt/RiderProjects/HappyHeadlines-DLS26gruppeM3xA/Shared/Observability/Observability.csproj": {
+              "projectPath": "/Users/malenevonwildenradt/RiderProjects/HappyHeadlines-DLS26gruppeM3xA/Shared/Observability/Observability.csproj"
             }
           }
         }
@@ -2666,10 +2855,11 @@
         "auditLevel": "low",
         "auditMode": "all"
       },
-      "SdkAnalysisLevel": "10.0.100"
+      "SdkAnalysisLevel": "10.0.400"
     },
     "frameworks": {
       "net10.0": {
+        "framework": "net10.0",
         "targetAlias": "net10.0",
         "dependencies": {
           "Microsoft.AspNetCore.OpenApi": {
@@ -2689,6 +2879,14 @@
           "RabbitMQ.Client": {
             "target": "Package",
             "version": "[7.2.2, )"
+          },
+          "StackExchange.Redis": {
+            "target": "Package",
+            "version": "[3.3.1, )"
+          },
+          "prometheus-net.AspNetCore": {
+            "target": "Package",
+            "version": "[8.2.1, )"
           }
         },
         "imports": [
@@ -2710,7 +2908,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.401/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.AspNetCore": "(,10.0.32767]",
           "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",
