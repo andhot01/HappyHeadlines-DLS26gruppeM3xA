@@ -2,6 +2,8 @@ using ArticleService.Repositories;
 using ArticleService.Data;
 using Observability;
 using ArticleService.Services;
+using Prometheus;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,9 +12,16 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddHappyHeadlinesTracing("ArticleService");
 
-builder.Services.AddSingleton<IArticleRepository, ArticleRepository>();
+builder.Services.AddSingleton<ArticleRepository>();
+builder.Services.AddSingleton<IArticleRepository, CachedArticleRepository>();
 builder.Services.AddSingleton<ArticleDbContextFactory>();
 builder.Services.AddHostedService<ArticleQueueConsumer>();
+builder.Services.AddHostedService<ArticleCacheWarmer>();
+
+builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
+    ConnectionMultiplexer.Connect(
+        builder.Configuration.GetConnectionString("ArticleCache")
+        ?? "localhost:6379,abortConnect=false"));
 
 var app = builder.Build();
 
@@ -34,5 +43,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapControllers();
+app.MapMetrics();
 
 app.Run();
