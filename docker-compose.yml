@@ -96,7 +96,6 @@ services:
       OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
       RabbitMQ__Host: article-queue
       ConnectionStrings__ArticleCache: article-cache:6379,abortConnect=false,connectTimeout=1000,syncTimeout=500
-      ArticleCache__RefreshIntervalSeconds: 30
     ports:
       - "8084:8080"
     depends_on:
@@ -118,7 +117,6 @@ services:
       OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
       RabbitMQ__Host: article-queue
       ConnectionStrings__ArticleCache: article-cache:6379,abortConnect=false,connectTimeout=1000,syncTimeout=500
-      ArticleCache__RefreshIntervalSeconds: 30
     depends_on:
       - article-db-africa
       - article-db-antarctica
@@ -138,7 +136,6 @@ services:
       OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
       RabbitMQ__Host: article-queue
       ConnectionStrings__ArticleCache: article-cache:6379,abortConnect=false,connectTimeout=1000,syncTimeout=500
-      ArticleCache__RefreshIntervalSeconds: 30
     depends_on:
       - article-db-africa
       - article-db-antarctica
