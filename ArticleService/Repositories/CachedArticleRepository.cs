@@ -18,6 +18,12 @@ public class CachedArticleRepository : IArticleRepository
         "Number of cache misses",
         new CounterConfiguration { LabelNames = new[] { "cache" } });
 
+    static CachedArticleRepository()
+    {
+        CacheHits.WithLabels("article");
+        CacheMisses.WithLabels("article");
+    }
+
     private readonly ArticleRepository _inner;
     private readonly IConnectionMultiplexer _redis;
     private readonly ILogger<CachedArticleRepository> _logger;

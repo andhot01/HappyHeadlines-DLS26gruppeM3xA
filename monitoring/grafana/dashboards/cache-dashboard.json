@@ -1,0 +1,114 @@
+{
+  "uid": "hh-cache",
+  "title": "HappyHeadlines - Cache hit ratio",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "5s",
+  "time": { "from": "now-15m", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "type": "gauge",
+      "title": "ArticleCache hit ratio (total)",
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(cache_hits_total{cache=\"article\"}) / (sum(cache_hits_total{cache=\"article\"}) + sum(cache_misses_total{cache=\"article\"}))"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 0.5 },
+              { "color": "green", "value": 0.8 }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 2,
+      "type": "gauge",
+      "title": "CommentCache hit ratio (total)",
+      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(cache_hits_total{cache=\"comment\"}) / (sum(cache_hits_total{cache=\"comment\"}) + sum(cache_misses_total{cache=\"comment\"}))"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 0.5 },
+              { "color": "green", "value": 0.8 }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Hit ratio over time (1 min window)",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "legendFormat": "ArticleCache",
+          "expr": "sum(rate(cache_hits_total{cache=\"article\"}[1m])) / (sum(rate(cache_hits_total{cache=\"article\"}[1m])) + sum(rate(cache_misses_total{cache=\"article\"}[1m])))"
+        },
+        {
+          "refId": "B",
+          "legendFormat": "CommentCache",
+          "expr": "sum(rate(cache_hits_total{cache=\"comment\"}[1m])) / (sum(rate(cache_hits_total{cache=\"comment\"}[1m])) + sum(rate(cache_misses_total{cache=\"comment\"}[1m])))"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "percentunit", "min": 0, "max": 1 },
+        "overrides": []
+      }
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Hits and misses per second",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "legendFormat": "{{cache}} hits",
+          "expr": "sum by (cache) (rate(cache_hits_total[1m]))"
+        },
+        {
+          "refId": "B",
+          "legendFormat": "{{cache}} misses",
+          "expr": "sum by (cache) (rate(cache_misses_total[1m]))"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "reqps" },
+        "overrides": []
+      }
+    }
+  ]
+}

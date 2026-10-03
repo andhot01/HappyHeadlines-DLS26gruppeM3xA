@@ -16,6 +16,7 @@ builder.Services.AddSingleton<ArticleRepository>();
 builder.Services.AddSingleton<IArticleRepository, CachedArticleRepository>();
 builder.Services.AddSingleton<ArticleDbContextFactory>();
 builder.Services.AddHostedService<ArticleQueueConsumer>();
+builder.Services.AddHostedService<ArticleCacheWarmer>();
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
     ConnectionMultiplexer.Connect(

@@ -258,3 +258,70 @@ The Jaeger UI is available at:
 This makes it possible to follow a request across service boundaries and identify which services participated in an operation.
 
 For example, publishing a single article can be followed from `PublisherService`, through RabbitMQ, and into both `ArticleService` and `NewsletterService` as one distributed trace.
+
+# Week 40 – Caching and cache dashboard
+
+## Background
+
+After the z-axis split of the ArticleDatabase, the global database is located in North America and is not replicated. This caused slower response times for users in Europe.
+
+The ARB decided not to use an x-axis split because of the extra cost. Instead, a caching layer was added in front of the global ArticleDatabase and CommentDatabase.
+
+## Technology choices
+
+* **Redis** is used for both caches. There are two separate Redis instances: `article-cache` and `comment-cache`. This makes it possible to measure the two caches separately and means that a problem with one cache does not affect the other.
+* **Decorator pattern** is used with `CachedArticleRepository` and `CachedCommentRepository`, which wrap the existing repositories. This means the controllers do not need to be changed.
+* **Fail open** is used. If Redis is unavailable, the application uses the database instead. Redis errors are logged but are not returned to the client.
+
+## ArticleCache
+
+The ArticleCache is filled by an offline process called `ArticleCacheWarmer`.
+
+The warmer runs as a background service and, by default, runs every 10 minutes. It gets articles from the latest 14 days and stores them in Redis.
+
+Since there are three ArticleService instances, a Redis lock using `SET NX` makes sure that only one instance warms the cache in each round.
+
+The cache entries have a TTL of 30 minutes. This works as a safety net if the warmer stops running.
+
+When reading an article, the service first checks Redis. If the article is not in the cache, it falls back to the database. A cache miss does not add the article to the cache.
+
+When an article is created, it is added to the cache. When an article is updated or deleted, the cached version is invalidated.
+
+One thing to note is that `GET /api/articles/{region}` only returns articles from the latest 14 days when the result comes from the cache.
+
+## CommentCache
+
+The CommentCache uses a cache miss approach.
+
+When the comments for an article are requested for the first time, they are loaded from the database and then stored in Redis. Later requests can then use the cached result.
+
+The cache can contain comments for a maximum of 30 articles. A Redis sorted set called `comments:lru` keeps track of when each article was last used.
+
+A Lua script stores the comments and removes the least recently used articles when there are more than 30 articles in the cache. This is done atomically.
+
+When a comment is created or deleted, the cache entry for that article is invalidated.
+
+## Dashboard
+
+Prometheus scrapes `/metrics` from the ArticleService instances and the CommentService.
+
+Both caches expose `cache_hits_total` and `cache_misses_total` with the label `cache="article"` or `cache="comment"`.
+
+Grafana is available at `http://localhost:3000` using `admin/admin`.
+
+The dashboard is called **HappyHeadlines - Cache hit ratio** and shows:
+
+* Total cache hit ratio
+* Hit ratio over time
+* Hits and misses per second
+
+The dashboard is provisioned from `monitoring/grafana/dashboards`.
+
+## Testing
+
+`./loadtest.sh` generates traffic for both caches.
+
+The observed results were:
+
+* **ArticleCache:** around 90.9% hit ratio, which is about 10 hits for every miss in the script.
+* **CommentCache:** around 69–75% hit ratio. The script uses 40 different articles, while the cache only holds 30, so the LRU cache keeps evicting articles.

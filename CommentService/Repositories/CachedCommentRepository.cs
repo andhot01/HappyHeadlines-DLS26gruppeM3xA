@@ -19,6 +19,12 @@ public class CachedCommentRepository : ICommentRepository
         "cache_misses_total",
         "Number of cache misses",
         new CounterConfiguration { LabelNames = new[] { "cache" } });
+
+    static CachedCommentRepository()
+    {
+        CacheHits.WithLabels("comment");
+        CacheMisses.WithLabels("comment");
+    }
     
     private const string StoreScript = @"
         redis.call('SET', KEYS[1], ARGV[1])
