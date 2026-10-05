@@ -9,10 +9,10 @@ for i in $(seq 1 40); do IDS+=($(uuidgen | tr A-Z a-z)); done
 
 for round in $(seq 1 300); do
   # ArticleCache: mest liste-opslag (hits) og af og til ukendt id (miss)
-  curl -s $ARTICLE/api/articles/Europe > /dev/null
-  curl -s $ARTICLE/api/articles/Europe > /dev/null
+  curl -s $ARTICLE/api/articles/Global > /dev/null
+  curl -s $ARTICLE/api/articles/Global > /dev/null
   if (( round % 5 == 0 )); then
-    curl -s $ARTICLE/api/articles/Europe/$(uuidgen | tr A-Z a-z) > /dev/null
+    curl -s $ARTICLE/api/articles/Global/$(uuidgen | tr A-Z a-z) > /dev/null
   fi
 
   # CommentCache: tilfældig artikel ud af 40

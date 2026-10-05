@@ -275,9 +275,11 @@ The ARB decided not to use an x-axis split because of the extra cost. Instead, a
 
 ## ArticleCache
 
+The ArticleCache is only used for the **global** ArticleDatabase, since that is the database located in North America. Requests for the seven regional databases do not use the cache and go directly to their databases.
+
 The ArticleCache is filled by an offline process called `ArticleCacheWarmer`.
 
-The warmer runs as a background service and, by default, runs every 10 minutes. It gets articles from the latest 14 days and stores them in Redis.
+The warmer runs as a background service and, by default, runs every 10 minutes. It gets articles from the global database from the latest 14 days and stores them in Redis.
 
 Since there are three ArticleService instances, a Redis lock using `SET NX` makes sure that only one instance warms the cache in each round.
 
@@ -287,7 +289,7 @@ When reading an article, the service first checks Redis. If the article is not i
 
 When an article is created, it is added to the cache. When an article is updated or deleted, the cached version is invalidated.
 
-One thing to note is that `GET /api/articles/{region}` only returns articles from the latest 14 days when the result comes from the cache.
+One thing to note is that `GET /api/articles/Global` only returns articles from the latest 14 days when the result comes from the cache.
 
 ## CommentCache
 
@@ -319,9 +321,11 @@ The dashboard is provisioned from `monitoring/grafana/dashboards`.
 
 ## Testing
 
-`./loadtest.sh` generates traffic for both caches.
+`./loadtest.sh` generates traffic for both caches. The ArticleCache is tested with requests to `/api/articles/Global`.
 
 The observed results were:
 
 * **ArticleCache:** around 90.9% hit ratio, which is about 10 hits for every miss in the script.
 * **CommentCache:** around 69–75% hit ratio. The script uses 40 different articles, while the cache only holds 30, so the LRU cache keeps evicting articles.
+
+Requests for regions other than Global do not use the ArticleCache and are not counted as hits or misses.

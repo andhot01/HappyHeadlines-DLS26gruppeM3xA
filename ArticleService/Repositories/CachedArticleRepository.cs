@@ -27,7 +27,7 @@ public class CachedArticleRepository : IArticleRepository
     private readonly ArticleRepository _inner;
     private readonly IConnectionMultiplexer _redis;
     private readonly ILogger<CachedArticleRepository> _logger;
-    
+
     public CachedArticleRepository(
         ArticleRepository inner,
         IConnectionMultiplexer redis,
@@ -40,6 +40,9 @@ public class CachedArticleRepository : IArticleRepository
 
     public IEnumerable<Article> GetAll(Region region)
     {
+        if (!ArticleCacheKeys.IsCached(region))
+            return _inner.GetAll(region);
+
         try
         {
             var cached = _redis.GetDatabase().StringGet(ArticleCacheKeys.List(region));
@@ -54,17 +57,20 @@ public class CachedArticleRepository : IArticleRepository
         {
             _logger.LogWarning(ex, "Article cache unavailable on read, falling back to database");
         }
-        
+
         CacheMisses.WithLabels("article").Inc();
         return _inner.GetAll(region);
     }
 
     public Article? GetById(Guid id, Region region)
     {
+        if (!ArticleCacheKeys.IsCached(region))
+            return _inner.GetById(id, region);
+
         try
         {
             var cached = _redis.GetDatabase().StringGet(ArticleCacheKeys.Article(region, id));
-            
+
             if (cached.HasValue)
             {
                 CacheHits.WithLabels("article").Inc();
@@ -75,7 +81,7 @@ public class CachedArticleRepository : IArticleRepository
         {
             _logger.LogWarning(ex, "Article cache unavailable on read, falling back to database");
         }
-        
+
         CacheMisses.WithLabels("article").Inc();
         return _inner.GetById(id, region);
     }
@@ -83,6 +89,9 @@ public class CachedArticleRepository : IArticleRepository
     public Article Create(Article article)
     {
         var created = _inner.Create(article);
+
+        if (!ArticleCacheKeys.IsCached(created.Region))
+            return created;
 
         try
         {
@@ -108,26 +117,22 @@ public class CachedArticleRepository : IArticleRepository
 
     public bool Update(Guid id, Region region, Article article)
     {
-        var sucess = _inner.Update(id, region, article);
+        var success = _inner.Update(id, region, article);
 
-        if (sucess)
-        {
+        if (success && ArticleCacheKeys.IsCached(region))
             Invalidate(id, region);
-        }
-        
-        return sucess;
+
+        return success;
     }
 
     public bool Delete(Guid id, Region region)
     {
-        var sucess = _inner.Delete(id, region);
+        var success = _inner.Delete(id, region);
 
-        if (sucess)
-        {
+        if (success && ArticleCacheKeys.IsCached(region))
             Invalidate(id, region);
-        }
-        
-        return sucess;
+
+        return success;
     }
 
     private void Invalidate(Guid id, Region region)
