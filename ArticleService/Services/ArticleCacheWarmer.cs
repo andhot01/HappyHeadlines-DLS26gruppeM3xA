@@ -71,7 +71,7 @@ public class ArticleCacheWarmer : BackgroundService
 
         var cutoff = DateTime.UtcNow - ArticleCacheKeys.MaxAge;
 
-        foreach (var region in Enum.GetValues<Region>())
+        foreach (var region in Enum.GetValues<Region>().Where(ArticleCacheKeys.IsCached))
         {
             var recent = _repository
                 .GetAll(region)
