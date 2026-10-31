@@ -5,11 +5,17 @@ EXPOSE 8080
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
-COPY ["ProfanityService.csproj", "./"]
-RUN dotnet restore "ProfanityService.csproj"
+# Copy project file first for dependency restore
+COPY ["ProfanityService/ProfanityService.csproj", "ProfanityService/"]
 
-COPY . .
-RUN dotnet publish "ProfanityService.csproj" -c Release -o /app/publish
+RUN dotnet restore "ProfanityService/ProfanityService.csproj"
+
+# Copy source code
+COPY ["ProfanityService/", "ProfanityService/"]
+
+# Publish
+WORKDIR "/src/ProfanityService"
+RUN dotnet publish "ProfanityService.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
