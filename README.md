@@ -329,3 +329,10 @@ The observed results were:
 * **CommentCache:** around 69–75% hit ratio. The script uses 40 different articles, while the cache only holds 30, so the LRU cache keeps evicting articles.
 
 Requests for regions other than Global do not use the ArticleCache and are not counted as hits or misses.
+
+
+# Week 43 - CI/CD
+A CI/CD pipeline was added using GitHub Actions. The pipeline runs automatically when cahnges are pushed to the main branch. It builds Docker images for all six services.
+
+The Docker images are tagged with a version number using the GitHub Actions run number and pushed to the GitHub Container Registry.
+The pipeline uses a matrix strategy to build and publish each service independently. 
