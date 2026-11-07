@@ -165,6 +165,17 @@ services:
       POSTGRES_PASSWORD: postgres
     ports:
       - "5441:5432"
+    
+  subscriber-db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: subscribers
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5444:5432"
+    volumes:
+      - subscriberdb_data:/var/lib/postgresql/data
 
   profanity-db:
     image: postgres:16
@@ -231,6 +242,7 @@ services:
       OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
       RabbitMQ__Host: article-queue
       ArticleService__BaseUrl: http://nginx
+      SubscriberService__BaseUrl: http://subscriber-service:8080
     ports:
       - "8085:8080"
     depends_on:
@@ -257,6 +269,36 @@ services:
       jaeger:
         condition: service_started
 
+  subscriber-service:
+    build:
+      context: .
+      dockerfile: SubscriberService/Dockerfile
+    container_name: subscriber-service
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      RabbitMQ__Host: article-queue
+      ConnectionStrings__SubscriberDb: Host=subscriber-db;Port=5432;Database=subscribers;Username=postgres;Password=postgres
+      FeatureHub__Url: "http://happyheadlines-featurehub:8085"
+      FeatureHub__ApiKey: 6ac79dd5-fa8e-4266-81c1-033b664ed968/uMf8zc1jqEhS88qb8bRj2OJFUIr1xk*ugXq5MSUROqTqFX9bQHT
+    ports:
+      - "8087:8080"
+    depends_on:
+      subscriber-db:
+        condition: service_started
+      article-queue:
+        condition: service_healthy
+      featurehub:
+        condition: service_started
+        
+  featurehub:
+    image: featurehub/party-server:latest
+    container_name: happyheadlines-featurehub
+    user: "999:999"
+    ports:
+      - "8090:8085"
+    volumes:
+      - featurehub_data:/db
+    
   article-cache:
     image: redis:7-alpine
     container_name: article-cache
@@ -307,3 +349,5 @@ services:
 volumes:
   draftdb_data:
   grafana_data:
+  subscriberdb_data:
+  featurehub_data:

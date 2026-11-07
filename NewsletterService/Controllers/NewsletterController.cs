@@ -8,10 +8,14 @@ namespace NewsletterService.Controllers;
 public class NewsletterController : ControllerBase
 {
     private readonly ArticleServiceClient _articleServiceClient;
+    private readonly SubscriberServiceClient _subscriberServiceClient;
 
-    public NewsletterController(ArticleServiceClient articleServiceClient)
+    public NewsletterController(
+        ArticleServiceClient articleServiceClient,
+        SubscriberServiceClient subscriberServiceClient)
     {
         _articleServiceClient = articleServiceClient;
+        _subscriberServiceClient = subscriberServiceClient;
     }
 
     [HttpGet("daily/{region}")]
@@ -36,4 +40,23 @@ public class NewsletterController : ControllerBase
             Article = article
         });
     }
+
+    [HttpGet("subscribers")]
+    public async Task<IActionResult> GetSubscribers(CancellationToken cancellationToken)
+    {
+        try
+        {
+            var subscribers = await _subscriberServiceClient.GetSubscriberAsync(cancellationToken);
+           
+            return Ok(subscribers);
+        }
+        catch (HttpRequestException)
+        {
+            return StatusCode(
+                StatusCodes.Status503ServiceUnavailable,
+                "SubscriberService is currently unavailable.");
+
+        }
+    }
+    
 }

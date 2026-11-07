@@ -27,6 +27,9 @@ jobs:
 
           - service: NewsletterService
             image: newsletter-service
+            
+          - service: SubscriberService
+            image: subscriber-service
 
           - service: ProfanityService
             image: profanity-service
