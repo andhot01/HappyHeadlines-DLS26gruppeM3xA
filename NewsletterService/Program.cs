@@ -9,6 +9,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddHappyHeadlinesTracing("NewsletterService");
 
 builder.Services.AddHostedService<NewsletterArticleConsumer>();
+builder.Services.AddHostedService<SubscriberConsumer>();
 
 builder.Services.AddHttpClient<ArticleServiceClient>(client =>
 {
@@ -16,6 +17,14 @@ builder.Services.AddHttpClient<ArticleServiceClient>(client =>
         builder.Configuration["ArticleService:BaseUrl"]
         ?? "http://localhost:8080");
 });
+
+builder.Services.AddHttpClient<SubscriberServiceClient>(client =>
+{
+    client.BaseAddress = new Uri(
+        builder.Configuration["SubscriberService:BaseUrl"]
+        ?? "http://localhost:8087");
+})
+.AddStandardResilienceHandler();
 
 var app = builder.Build();
 

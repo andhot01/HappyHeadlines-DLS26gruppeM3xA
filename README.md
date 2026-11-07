@@ -335,4 +335,56 @@ Requests for regions other than Global do not use the ArticleCache and are not c
 A CI/CD pipeline was added using GitHub Actions. The pipeline runs automatically when cahnges are pushed to the main branch. It builds Docker images for all six services.
 
 The Docker images are tagged with a version number using the GitHub Actions run number and pushed to the GitHub Container Registry.
-The pipeline uses a matrix strategy to build and publish each service independently. 
+The pipeline uses a matrix strategy to build and publish each service independently.
+
+# Week 44 – SubscriberService, Fault Isolation and Release Toggle
+
+This week focused on implementing the SubscriberService and its supporting infrastructure, while ensuring fault isolation between NewsletterService and SubscriberService.
+
+## SubscriberService
+
+A separate `SubscriberService` was implemented to handle subscriber functionality.
+
+The service has its own PostgreSQL database, keeping subscriber data separate from the other services.
+
+It also has its own RabbitMQ queue for asynchronous messaging.
+
+## Service separation and fault isolation
+
+`NewsletterService` and `SubscriberService` run independently in separate swimlanes.
+
+Communication between the services is isolated so that an unavailable SubscriberService does not bring down the entire NewsletterService.
+
+If SubscriberService is unavailable, operations that depend on it can return `503 Service Unavailable`, while the rest of NewsletterService remains available.
+
+This reduces the dependency between the two services and limits the impact of failures.
+
+## Release toggle with FeatureHub
+
+A release toggle was implemented using FeatureHub.
+
+The feature flag is called `SubscriberServiceEnabled` and controls whether SubscriberService is enabled.
+
+The toggle can be activated and deactivated at runtime without redeploying or restarting the application.
+
+When the feature is disabled, requests to SubscriberService return:
+
+`503 Service Unavailable`
+
+When the feature is enabled again, the service becomes available without requiring a restart.
+
+## Docker
+
+SubscriberService, its database and its RabbitMQ queue have been added to Docker Compose.
+
+SubscriberService also has its own Dockerfile, allowing it to be built and deployed independently.
+
+FeatureHub is included in Docker Compose and handles the release toggle configuration.
+
+## CI/CD
+
+The GitHub Actions CI/CD pipeline has been updated to include SubscriberService.
+
+The pipeline now builds and publishes Docker images for all seven application services to the GitHub Container Registry.
+
+SubscriberService is included in the existing matrix strategy, so it is built and published independently like the other services.
