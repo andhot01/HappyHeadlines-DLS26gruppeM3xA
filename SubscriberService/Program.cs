@@ -1,3 +1,4 @@
+using FeatureHubSDK;
 using Microsoft.EntityFrameworkCore;
 using SubscriberService.Data;
 using SubscriberService.Services;
@@ -8,8 +9,11 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddSingleton<SubscriberQueuePublisher>();
-builder.Services.AddSingleton<FeatureFlagState>();
-builder.Services.AddHostedService<FeatureFlagRefresher>();
+
+builder.Services.AddSingleton<IFeatureHubConfig>(_ =>
+    new EdgeFeatureHubConfig(
+        builder.Configuration["FeatureHub:Url"] ?? "http://localhost:8090",
+        builder.Configuration["FeatureHub:ApiKey"] ?? ""));
 
 builder.Services.AddDbContext<SubscriberDbContext>(options =>
     options.UseNpgsql(
@@ -30,11 +34,23 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Feature toggle: hele SubscriberService er skjult, når flaget er slukket
 app.Use(async (HttpContext context, RequestDelegate next) =>
 {
-    var state = context.RequestServices.GetRequiredService<FeatureFlagState>();
+    var config = context.RequestServices.GetRequiredService<IFeatureHubConfig>();
 
-    if (!state.Enabled)
+    bool enabled;
+    try
+    {
+        var fh = await config.NewContext().Build();
+        enabled = fh["SubscriberServiceEnabled"].IsEnabled;
+    }
+    catch
+    {
+        enabled = false; // fail closed
+    }
+
+    if (!enabled)
     {
         context.Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
         await context.Response.WriteAsync("SubscriberService is currently disabled.");

@@ -9,13 +9,15 @@ namespace NewsletterService.Services;
 public class SubscriberConsumer : BackgroundService
 {
     private readonly IConfiguration _configuration;
+    private readonly IFeatureToggle _toggle;
 
     private IConnection? _connection;
     private IChannel? _channel;
 
-    public SubscriberConsumer(IConfiguration configuration)
+    public SubscriberConsumer(IConfiguration configuration,  IFeatureToggle toggle)
     {
         _configuration = configuration;
+        _toggle = toggle;
     }
 
     protected override async Task ExecuteAsync(
@@ -42,6 +44,18 @@ public class SubscriberConsumer : BackgroundService
 
         consumer.ReceivedAsync += async (_, ea) =>
         {
+            if (!await _toggle.IsSubscriberServiceEnabledAsync())
+            {
+                Console.WriteLine("Subscriber feature is OFF - message returned to queue.");
+                await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+                await _channel.BasicNackAsync(
+                    ea.DeliveryTag,
+                    multiple: false,
+                    requeue: true,
+                    cancellationToken: stoppingToken);
+                return;
+            }
+            
             try
             {
                 var json = Encoding.UTF8.GetString(ea.Body.ToArray());

@@ -9,13 +9,16 @@ public class NewsletterController : ControllerBase
 {
     private readonly ArticleServiceClient _articleServiceClient;
     private readonly SubscriberServiceClient _subscriberServiceClient;
+    private readonly IFeatureToggle _toggle;
 
     public NewsletterController(
         ArticleServiceClient articleServiceClient,
-        SubscriberServiceClient subscriberServiceClient)
+        SubscriberServiceClient subscriberServiceClient,
+        IFeatureToggle toggle)
     {
         _articleServiceClient = articleServiceClient;
         _subscriberServiceClient = subscriberServiceClient;
+        _toggle = toggle;
     }
 
     [HttpGet("daily/{region}")]
@@ -44,10 +47,17 @@ public class NewsletterController : ControllerBase
     [HttpGet("subscribers")]
     public async Task<IActionResult> GetSubscribers(CancellationToken cancellationToken)
     {
+        if (!await _toggle.IsSubscriberServiceEnabledAsync())
+        {
+            return StatusCode(
+                StatusCodes.Status503ServiceUnavailable,
+                "Subscriber functionality is currently disabled.");
+        }
+
         try
         {
             var subscribers = await _subscriberServiceClient.GetSubscriberAsync(cancellationToken);
-           
+
             return Ok(subscribers);
         }
         catch (HttpRequestException)
@@ -55,7 +65,6 @@ public class NewsletterController : ControllerBase
             return StatusCode(
                 StatusCodes.Status503ServiceUnavailable,
                 "SubscriberService is currently unavailable.");
-
         }
     }
     
