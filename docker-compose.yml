@@ -188,7 +188,8 @@ services:
 
   comment-service:
     build:
-      context: ./CommentService
+      context: .
+      dockerfile: CommentService/Dockerfile
     environment:
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__CommentCache: comment-cache:6379,abortConnect=false,connectTimeout=1000,syncTimeout=500
@@ -200,7 +201,8 @@ services:
 
   profanity-service:
     build:
-      context: ./ProfanityService
+      context: .
+      dockerfile: ProfanityService/Dockerfile
     environment:
       ASPNETCORE_URLS: http://+:8080
     ports:
@@ -243,6 +245,8 @@ services:
       RabbitMQ__Host: article-queue
       ArticleService__BaseUrl: http://nginx
       SubscriberService__BaseUrl: http://subscriber-service:8080
+      FeatureHub__Url: "http://happyheadlines-featurehub:8085"
+      FeatureHub__ApiKey: 6ac79dd5-fa8e-4266-81c1-033b664ed968/uMf8zc1jqEhS88qb8bRj2OJFUIr1xk*ugXq5MSUROqTqFX9bQHT
     ports:
       - "8085:8080"
     depends_on:
@@ -251,6 +255,8 @@ services:
       jaeger:
         condition: service_started
       nginx:
+        condition: service_started
+      featurehub:
         condition: service_started
 
   publisher-service:

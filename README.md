@@ -339,7 +339,7 @@ The pipeline uses a matrix strategy to build and publish each service independen
 
 # Week 44 – SubscriberService, Fault Isolation and Release Toggle
 
-This week focused on implementing the SubscriberService and its supporting infrastructure, while ensuring fault isolation between NewsletterService and SubscriberService.
+This week focused on implementing SubscriberService and its supporting infrastructure, while ensuring fault isolation between NewsletterService and SubscriberService.
 
 ## SubscriberService
 
@@ -351,27 +351,33 @@ It also has its own RabbitMQ queue for asynchronous messaging.
 
 ## Service separation and fault isolation
 
-`NewsletterService` and `SubscriberService` run independently in separate swimlanes.
+`NewsletterService` and `SubscriberService` run independently as separate services.
 
-Communication between the services is isolated so that an unavailable SubscriberService does not bring down the entire NewsletterService.
+Communication between the services is handled through an HTTP client with resilience handling, reducing the dependency between them.
 
-If SubscriberService is unavailable, operations that depend on it can return `503 Service Unavailable`, while the rest of NewsletterService remains available.
+If SubscriberService is unavailable, operations that depend on it can return `503 Service Unavailable`, while the remaining functionality in NewsletterService continues to work.
 
-This reduces the dependency between the two services and limits the impact of failures.
+This limits the impact of failures and prevents an unavailable SubscriberService from bringing down the entire NewsletterService.
 
 ## Release toggle with FeatureHub
 
-A release toggle was implemented using FeatureHub.
+A release toggle was implemented using the FeatureHub SDK.
 
-The feature flag is called `SubscriberServiceEnabled` and controls whether SubscriberService is enabled.
+The feature flag is called `SubscriberServiceEnabled` and controls access to subscriber functionality.
 
-The toggle can be activated and deactivated at runtime without redeploying or restarting the application.
+The toggle is checked by both NewsletterService and SubscriberService, ensuring that subscriber functionality is disabled consistently across both services.
+
+The feature flag can be activated and deactivated at runtime without redeploying or restarting the services.
 
 When the feature is disabled, requests to SubscriberService return:
 
 `503 Service Unavailable`
 
-When the feature is enabled again, the service becomes available without requiring a restart.
+NewsletterService also blocks requests to subscriber-related functionality when the feature is disabled.
+
+When the feature is enabled again, subscriber functionality becomes available without requiring a restart.
+
+If FeatureHub cannot be reached, the services fail closed and treat the feature as disabled.
 
 ## Docker
 
@@ -385,6 +391,6 @@ FeatureHub is included in Docker Compose and handles the release toggle configur
 
 The GitHub Actions CI/CD pipeline has been updated to include SubscriberService.
 
-The pipeline now builds and publishes Docker images for all seven application services to the GitHub Container Registry.
+The pipeline builds and publishes Docker images for all seven application services to the GitHub Container Registry.
 
 SubscriberService is included in the existing matrix strategy, so it is built and published independently like the other services.

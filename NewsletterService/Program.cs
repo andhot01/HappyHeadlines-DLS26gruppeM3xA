@@ -1,3 +1,4 @@
+using FeatureHubSDK;
 using Observability;
 using NewsletterService.Services;
 
@@ -7,6 +8,15 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddHappyHeadlinesTracing("NewsletterService");
+
+builder.Services.AddHostedService<NewsletterArticleConsumer>();
+builder.Services.AddHostedService<SubscriberConsumer>();
+
+builder.Services.AddSingleton<IFeatureHubConfig>(_ =>
+    new EdgeFeatureHubConfig(
+        builder.Configuration["FeatureHub:Url"] ?? "http://localhost:8090",
+        builder.Configuration["FeatureHub:ApiKey"] ?? ""));
+builder.Services.AddSingleton<IFeatureToggle, FeatureHubToggle>();
 
 builder.Services.AddHostedService<NewsletterArticleConsumer>();
 builder.Services.AddHostedService<SubscriberConsumer>();
