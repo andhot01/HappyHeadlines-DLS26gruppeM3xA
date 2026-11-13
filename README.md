@@ -394,3 +394,23 @@ The GitHub Actions CI/CD pipeline has been updated to include SubscriberService.
 The pipeline builds and publishes Docker images for all seven application services to the GitHub Container Registry.
 
 SubscriberService is included in the existing matrix strategy, so it is built and published independently like the other services.
+
+
+
+# Week 45
+Implemented 3 GAF tactics
+
+## Defer Fetching
+Before: ArticleService retrieved all articles regardless of how many were needed.
+After: Pagination was implemented using .Skip() and .Take(), allowing clients to request articles in smaller batches.
+Files changed: ArticleRepository, ArticleController, IArticleRepository, CachedArticleRepository
+
+## Reduce Network Package Size
+Before: ArticleService returned complete article objects, incl. full content.
+After: A lightweight summaries endpoint was introduced, returning only necessary info.
+Files changed: ArticleController
+
+## Reduce Logging
+Before: ArticleService used the default Information logging level, which allowed routine informational messages to be recorded.
+After: The default logging level was changed to Warning, filtering out info messages while keeping warnings and errors.
+Files changed: appsettings.json (ArticleService)
