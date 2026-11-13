@@ -50,6 +50,30 @@ public class ArticlesController : ControllerBase
         return Ok(articles);
     }
 
+    [HttpGet("{region}/summaries")]
+    public IActionResult GetSummaries(
+        Region region,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10)
+    {
+        if (page < 1 || pageSize < 1 || pageSize > 100)
+        {
+            return BadRequest("Invalid pagination parameters.");
+        }
+
+        var summaries = _repository
+            .GetAll(region, page, pageSize)
+            .Select(a => new
+            {
+                a.Id,
+                a.Title,
+                a.Region,
+                a.PublishedAt
+            });
+
+        return Ok(summaries);
+    }
+
     [HttpGet("{region}/{id:guid}")]
     public ActionResult<Article> GetById(
         Region region,
