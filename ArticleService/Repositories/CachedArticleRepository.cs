@@ -38,28 +38,44 @@ public class CachedArticleRepository : IArticleRepository
         _logger = logger;
     }
 
-    public IEnumerable<Article> GetAll(Region region)
+    public IEnumerable<Article> GetAll(
+        Region region,
+        int page = 1,
+        int pageSize = 10)
     {
         if (!ArticleCacheKeys.IsCached(region))
-            return _inner.GetAll(region);
+            return _inner.GetAll(region, page, pageSize);
 
         try
         {
-            var cached = _redis.GetDatabase().StringGet(ArticleCacheKeys.List(region));
+            var cached = _redis.GetDatabase()
+                .StringGet(ArticleCacheKeys.List(region));
 
             if (cached.HasValue)
             {
                 CacheHits.WithLabels("article").Inc();
-                return JsonSerializer.Deserialize<List<Article>>((string)cached!)!;
+
+                var articles = JsonSerializer
+                    .Deserialize<List<Article>>((string)cached!)!;
+
+                return articles
+                    .OrderByDescending(a => a.PublishedAt)
+                    .ThenBy(a => a.Id)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
             }
         }
         catch (RedisException ex)
         {
-            _logger.LogWarning(ex, "Article cache unavailable on read, falling back to database");
+            _logger.LogWarning(
+                ex,
+                "Article cache unavailable on read, falling back to database");
         }
 
         CacheMisses.WithLabels("article").Inc();
-        return _inner.GetAll(region);
+
+        return _inner.GetAll(region, page, pageSize);
     }
 
     public Article? GetById(Guid id, Region region)

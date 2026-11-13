@@ -35,9 +35,17 @@ public class ArticlesController : ControllerBase
     }
 
     [HttpGet("{region}")]
-    public ActionResult<IEnumerable<Article>> GetAll(Region region)
+    public ActionResult<IEnumerable<Article>> GetAll(
+        Region region,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10)
     {
-        var articles = _repository.GetAll(region);
+        if (page < 1 || pageSize < 1 || pageSize > 100)
+        {
+            return BadRequest("Invalid pagination parameters.");
+        }
+
+        var articles = _repository.GetAll(region, page, pageSize);
 
         return Ok(articles);
     }

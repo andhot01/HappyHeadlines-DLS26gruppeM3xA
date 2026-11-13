@@ -13,12 +13,19 @@ public class ArticleRepository : IArticleRepository
         _contextFactory = contextFactory;
     }
 
-    public IEnumerable<Article> GetAll(Region region)
+    public IEnumerable<Article> GetAll(
+        Region region,
+        int page = 1,
+        int pageSize = 10)
     {
         using var context = _contextFactory.Create(region);
 
         return context.Articles
             .AsNoTracking()
+            .OrderByDescending(a => a.PublishedAt)
+            .ThenBy(a => a.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToList();
     }
 
